@@ -58,7 +58,6 @@ def preprocess(filename):
     file = open(filename, 'r')
     email_contents = file.read().replace('\n', '')
     file.close()
-
     # makes everything lowercase
     email_contents = email_contents.lower()
     # replace < > expressions with spaces
@@ -75,7 +74,6 @@ def preprocess(filename):
     email_contents = re.split('[ @$/#.-:&*+=\[\]?!(){},''">_<;%\n\r]', email_contents)
     # remove empty strings
     email_contents = [word for word in email_contents if len(word) > 0]
-
     # replace words with their stems
     ps = PorterStemmer()
     final_word_ls = []
@@ -85,16 +83,13 @@ def preprocess(filename):
         word = re.compile('[^a-zA-Z0-9]').sub('', word).strip()
         word = ps.stem(word)
         final_word_ls.append(word)
-
         # look up the word in the vocab_dict, if exists, then add index to word_indices
         if word in vocab_dict:
             word_indices.append(int(vocab_dict.get(word)))
-
     # now make sparse vectors for words
     vector = np.zeros(len(vocab_dict))
     for i in range(len(word_indices)):
         vector[word_indices[i]] = 1
-
     return vector
 
 
@@ -102,11 +97,12 @@ def predict(filename):
     """
     input filename with quotes, displays prediction statement
     """
-    if clf.predict(np.array([preprocess(filename)]))[0] == 1:
-        print('\nProgram predicts NOT spam!')
+    prediction = clf.predict(np.array([preprocess(filename)]))[0]
+    if prediction == 1:
+        print('\nProgram predicts SPAM!')
         print('(%0.3f confidence)\n' % clf.predict_proba((np.array([preprocess(filename)])))[0, 1], sep='')
-    else:
-        print('\nProgram predicts SPAM!\n')
+    elif prediction == 0:
+        print('\nProgram predicts NOT spam!\n')
         print('(%0.3f confidence)\n' % clf.predict_proba((np.array([preprocess(filename)])))[0, 0], sep='')
     return None
 

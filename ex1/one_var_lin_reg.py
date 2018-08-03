@@ -7,6 +7,7 @@ ex1: linear regression with one variable
 ##########################################################################################################
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import style; style.use('seaborn')
 
 # load data into np arrays for X, y
 data = np.genfromtxt('ex1data1.txt', delimiter=',')
@@ -31,22 +32,14 @@ X = np.vstack((np.ones(m), X))
 # initialize parameters theta[0] (y-int), theta[1] (slope)
 theta = np.zeros(2)
 
-# number of iterations, learning rate
-iterations = 1500
-alpha = 0.01
-
 
 def hypothesis():
-    """
-    for all values in X, computes hypothesis h(x) = theta[0] + theta[1] * X
-    """
+    """ for all values in X, computes hypothesis h(x) = theta[0] + theta[1] * X """
     return np.matmul(theta, X)
 
 
 def compute_cost():
-    """
-    computes value of cost function (MSE) for given parameters theta
-    """
+    """ computes value of cost function (MSE) for given parameters theta """
     return (1 / (2 * m)) * sum((hypothesis() - y) ** 2)
 
 
@@ -56,9 +49,13 @@ def compute_cost():
 # setup cost graph
 ax2 = plt.figure(2).add_subplot(111)
 
+# number of iterations, learning rate
+iterations = 1500
+alpha = 0.01
+
 # adjust theta every iteration
 for i in range(iterations):
-    # plot error, throwing away first two high values
+    # plot error, throwing away first two very high values
     if i > 2:
         ax2.scatter(i, compute_cost(), color='red')
     # find delta: gradient of cost function
@@ -77,8 +74,8 @@ ax2.set_ylabel('Cost')
 
 # plot trend line
 x_show = [min(X[1]), max(X[1])]
-y_show = [np.matmul(theta, [1, min(X[1])]), np.matmul(theta, [1, max(X[1])])]
-ax1.plot(x_show, y_show)
+y_show = [max(hypothesis()), min(hypothesis())]
+ax1.plot(x_show, y_show, color='skyblue')
 
 # show all graphs
 plt.show()

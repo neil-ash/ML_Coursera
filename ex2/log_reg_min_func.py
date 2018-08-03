@@ -3,6 +3,8 @@ logistic regression, parameters theta found using minimization function
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import style
+style.use('fivethirtyeight')
 import scipy.optimize as op
 
 # get data
@@ -75,5 +77,5 @@ plt.plot(show_x1, show_x2, color='black')
 plt.show()
 
 # make prediction on new student: Exam 1 score of 45 and an Exam 2 score of 85
-print(sigmoid(np.matmul(theta, np.array([1, 45, 85]))))
+print('Prediction on student with Exam 1 score of 45, Exam 2 score of 85: %0.2f' % sigmoid(np.matmul(theta, np.array([1, 45, 85]))))
 

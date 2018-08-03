@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib import style
-style.use('fivethirtyeight')
+style.use('ggplot')
 
 # get data
 data = np.genfromtxt('ex2data2.txt', delimiter=',')
@@ -56,8 +56,7 @@ def map_features(input1, input2):
 
 def sigmoid(z):
     """
-    returns output of sigmoid for input z, should work with np arrays (vectors and matrices) element-wise, same
-    dimension as input
+    returns output of sigmoid for input z, should work with np arrays (vectors and matrices) element-wise, same dimension as input
     """
     return 1 / (1 + np.exp(-z))
 

@@ -28,7 +28,7 @@ plt.xlabel('X1')
 plt.ylabel('X2')
 
 # train an SVM using a linear kernel
-clf = svm.SVC(kernel='linear', C=1)
+clf = svm.SVC(kernel='linear', C=1.0)
 clf.fit(X, y.ravel())
 
 # decision boundary eq in form: intercept + x1 * coeffficient[0] + x2 * coefficient[1] = 0

@@ -23,14 +23,14 @@ for i in range(len(y)):
     # convert 10 to 0
     if y[i] == 10:
         y[i] = 0
-    # replace each element w a 10 element array
+    # replace each element w a 10 element array,
     new_y[i][y[i]] = 1
 y = new_y
 
 # number of training examples = 5000
-m = x.shape[0]
+m = len(x)
 # number of features = 400
-n = x.shape[1]
+n = int(x.size / len(x))
 
 
 ##########################################################################################################
@@ -67,8 +67,8 @@ def cost(theta, digit, LAMBDA=1):
     returns cost function (single value) for given parameters theta
     """
     # start w unregularized
-    theta_cost = (1 / m) * np.sum((-y[:, digit]) * np.log(hypothesis(theta, x)) - (1 - y[:, digit]) *
-                                                                                   np.log(1 - hypothesis(theta, x)))
+    theta_cost = (1 / m) * np.sum((-y[:, digit]) * np.log(hypothesis(theta, x)) - (1 - y[:, digit]) * np.log(1 - hypothesis(theta, x)))
+
     # include regularization term for all parameters EXCEPT theta[0]
     theta_cost += (LAMBDA / (2 * m)) * np.sum(theta[1:] ** 2)
 
@@ -162,9 +162,5 @@ def predict(theta_ls, index):
 # TRAIN NETWORK AND MAKE PREDICTIONS
 ##########################################################################################################
 trained_theta = train_all(learning_rate=1, iterations=2000)
-
-"""
-to make a prediction: 
 predict(trained_theta, 4000)
-"""
 

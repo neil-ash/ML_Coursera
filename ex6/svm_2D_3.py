@@ -26,7 +26,7 @@ for i in range(m):
         plt.scatter(X[i, 0], X[i, 1], color='red')
     elif y[i] == 1:
         plt.scatter(X[i, 0], X[i, 1], color='green')
-plt.title('Example Dataset 1')
+plt.title('Example Dataset 3')
 plt.xlabel('X1')
 plt.ylabel('X2')
 

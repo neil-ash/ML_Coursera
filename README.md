@@ -1,7 +1,7 @@
 # ML_Coursera
 Python implementations of Andrew Ng's Coursera exercises
 
-Includes:
+Includes:\n
   ex1: Linear Regression
   ex2: Logistic Regression
   ex3: Logistic Regressions and Neural Networks -- Feedforward (applied to MNIST dataset)

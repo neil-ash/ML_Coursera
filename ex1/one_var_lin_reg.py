@@ -1,6 +1,4 @@
-"""
-ex1: linear regression with one variable
-"""
+""" Linear regression with one variable """
 
 ##########################################################################################################
 # IMPORT PACKAGES AND VISUALIZE DATA
@@ -34,12 +32,12 @@ theta = np.zeros(2)
 
 
 def hypothesis():
-    """ for all values in X, computes hypothesis h(x) = theta[0] + theta[1] * X """
+    """ For all values in X, computes hypothesis h(x) = theta[0] + theta[1] * X """
     return np.matmul(theta, X)
 
 
 def compute_cost():
-    """ computes value of cost function (MSE) for given parameters theta """
+    """ Computes value of cost function (MSE) for given parameters theta """
     return (1 / (2 * m)) * sum((hypothesis() - y) ** 2)
 
 

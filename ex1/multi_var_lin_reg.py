@@ -1,6 +1,4 @@
-"""
-ex1: optional exercise, linear regression with multiple variables
-"""
+""" Linear regression with mulitple variables """
 
 ##########################################################################################################
 # IMPORT PACKAGES AND DATA
@@ -30,7 +28,7 @@ initial_theta = np.zeros(3)
 # FUNCTIONS FOR SETUP AND TRAINING
 ##########################################################################################################
 def normalize_features(X1_, X2_):
-    """ function to normalize features -- center at 0, scale by std """
+    """ Function to normalize features -- center at 0, scale by std """
     # subtract mean
     X1_ -= sum(X1_) / X1_.size
     X2_ -= sum(X2_) / X2_.size
@@ -41,17 +39,17 @@ def normalize_features(X1_, X2_):
 
 
 def hypothesis(theta, inputs=X):
-    """ for all values in X, computes hypothesis h(x) = theta[0] + theta[1] * X """
+    """ For all values in X, computes hypothesis h(x) = theta[0] + theta[1] * X """
     return np.matmul(theta, inputs)
 
 
 def compute_cost(theta):
-    """ computes value of cost function (MSE) for given parameters theta """
+    """ Computes value of cost function (MSE) for given parameters theta """
     return (1 / (2 * m)) * sum((hypothesis(theta) - y) ** 2)
 
 
 def gradient_descent(theta, iterations=1500, alpha=0.01):
-    """ performs gradient descent """
+    """ Performs gradient descent """
     # setup cost graph
     plt.figure(1).clf()
     ax1 = plt.figure(1).add_subplot(111)
@@ -107,4 +105,5 @@ input2 = 3 - sum(X2_original) / X2_original.size
 input1 /= np.std(X1_original)
 input2 /= np.std(X2_original)
 # actually make prediction
-print('Price of a house with size 1650, 3 rooms: %d\n' % hypothesis(final_theta, inputs=np.array([1, input1, input2])))
+print('Price of a house with size 1650, 3 rooms: %d\n'
+      % hypothesis(final_theta, inputs=np.array([1, input1, input2])))

@@ -1,6 +1,4 @@
-"""
-implementation of a neural network, trained with backpropagation
-"""
+""" Implementation of a neural network trained with backpropagation for the MNIST dataset """
 
 ##########################################################################################################
 # IMPORT PACKAGES AND PREPARE DATA
@@ -15,16 +13,12 @@ from scipy.io import loadmat
 data = loadmat('ex4data1.mat')
 weights = loadmat('ex4weights.mat')
 
-# weights
-theta1 = weights.get('Theta1')  # theta1: weights from 1 -> 2
-theta2 = weights.get('Theta2')  # theta2: weights from 2 -> 3
-
 # X and y
 X = data['X']
 old_y = y = data['y'].ravel()   # to make y into an array of 1-hot, 10-element arrays
 new_y = np.zeros((5000, 10))
 for i in range(len(y)):
-    new_y[i][y[i] - 1] = 1      # replace each element w a 10 element array
+    new_y[i, y[i] - 1] = 1      # replace each element w a 10 element array
 y = new_y
 
 # m and n
@@ -36,9 +30,7 @@ n = X.shape[1]                  # number of features = 400
 # FUNCTIONS FOR SETUP AND TRAINING
 ##########################################################################################################
 def show_digit(index):
-    """
-    displays handwritten digit given its index
-    """
+    """ Displays handwritten digit given its index """
     plt.clf()
     plt.title('Digit Example')
     plt.axis('off')
@@ -49,108 +41,71 @@ def show_digit(index):
 
 
 def sigmoid(z):
-    """
-    returns output of sigmoid for input z (scalar, or array same dimension as input), computes np arrays element-wise
-    """
+    """ Returns output of sigmoid for input z, works with np arrays element-wise """
     return 1 / (1 + np.exp(-z))
 
 
 def sigmoid_gradient(z):
-    """
-    returns derivative (gradient) of sigmoid function
-    """
+    """ Returns derivative (gradient) of sigmoid function """
     return sigmoid(z) * (1 - sigmoid(z))
 
 
-def given_hypothesis():
-    """
-    returns hypothesis for all training examples in X (shape of (5000, 10)) WRT THETA1 AND THETA2
-    """
-    # add column of 1s
-    inputs = np.hstack((np.ones((5000, 1)), X))
-    # multiply theta1 w/ inputs, then add row of 1s
-    hidden = sigmoid(np.matmul(theta1, inputs.T))
-    hidden = np.vstack((np.ones((1, 5000)), hidden))
-    # multiply theta2 w/ hidden layer
-    outputs = sigmoid(np.matmul(theta2, hidden))
-    # return output nicely
-    return outputs.T
-
-
 def hypothesis(theta):
-    """
-    returns hypothesis for all training examples in X (shape of (5000, 10)) WRT INPUTTED THETA
-    """
-    temp_theta1 = np.reshape(theta[:10025], (25, 401))
-    temp_theta2 = np.reshape(theta[10025:], (10, 26))
-    # add column of 1s
-    inputs = np.hstack((np.ones((5000, 1)), X))
-    # multiply theta1 w/ inputs, then add row of 1s
+    """ Returns hypothesis for all training examples in X (5000, 10) WRT inputted theta """
+    # theta contains weights for input and hidden layers
+    temp_theta1 = np.reshape(theta[:(25 * 401)], (25, 401))      # input: 400 nodes, plus bias -> hidden: 25 nodes
+    temp_theta2 = np.reshape(theta[-(10 * 26):], (10, 26))       # hidden: 25 nodes, plus bias -> output: 10 nodes
+    # input layer: inputs X with additional column of 1s (biases for each point in training set)
+    inputs = np.hstack((np.ones((m, 1)), X))
+    # hidden layer: multiply theta1 w/ inputs, then add row of 1s (biases for each point in training set)
     hidden = sigmoid(np.matmul(temp_theta1, inputs.T))
-    hidden = np.vstack((np.ones((1, 5000)), hidden))
-    # multiply theta2 w/ hidden layer
+    hidden = np.vstack((np.ones((1, m)), hidden))
+    # output layer: multiply theta2 w/ hidden layer
     outputs = sigmoid(np.matmul(temp_theta2, hidden))
     # return output nicely
     return outputs.T
 
 
-def given_cost(LAMBDA=1):
-    """
-    returns REGULARIZED cost (scalar) WRT THETA1 AND THETA2
-    """
-    # start w unregularized
-    theta_cost = (1 / m) * np.sum((-y) * np.log(given_hypothesis()) - (1 - y) * np.log(1 - given_hypothesis()))
-    # include regularization term for all parameters EXCEPT first column of theta1, theta 2
-    theta_cost += (LAMBDA / (2 * m)) * (np.sum(theta1[:, 1:] ** 2) + np.sum(theta2[:, 1:] ** 2))
-    return theta_cost
-
-
 def cost(theta, LAMBDA=1):
-    """
-    returns REGULARIZED cost (scalar) WRT INPUTTED THETA
-    """
+    """ Returns regularized cost (scalar) WRT inputted theta """
     # reshape 1D theta vector in order to make predictions
-    temp_theta1 = np.reshape(theta[:10025], (25, 401))
-    temp_theta2 = np.reshape(theta[10025:], (10, 26))
-    # start w unregularized
+    temp_theta1 = np.reshape(theta[:(25 * 401)], (25, 401))
+    temp_theta2 = np.reshape(theta[-(10 * 26):], (10, 26))
+    # start w/ unregularized
     theta_cost = (1 / m) * np.sum((-y) * np.log(hypothesis(theta)) - (1 - y) * np.log(1 - hypothesis(theta)))
-    # include regularization term for all parameters EXCEPT first column of theta1, theta 2
+    # include regularization term for all parameters except first column of theta1, theta 2
     theta_cost += (LAMBDA / m) * (np.sum(temp_theta1[:, 1:]) + np.sum(temp_theta2[:, 1:]))
     return theta_cost
 
 
 def backpropagation(theta):
-    """
-    given theta as vector, returns gradient as a vector: elements are gradients for matrices theta1, theta2
-    """
-    # gradients for theta: temp_theta1 and temp_theta2
+    """ Given theta as vector, returns gradient as a vector w/ elements as gradients for matrices theta1, theta2 """
+    # gradients for theta, same shape as temp_theta1 and temp_theta2
     big_delta1 = np.zeros((25, 401))
     big_delta2 = np.zeros((10, 26))
-    # iterate thru all training examples -- uses all data to calculate gradients
+    # iterate thru all training examples (batch gradient descent)
     for i in range(m):
-        temp_theta1 = np.reshape(theta[:10025], (25, 401))
-        temp_theta2 = np.reshape(theta[10025:], (10, 26))
-        # 1
+        temp_theta1 = np.reshape(theta[:(25 * 401)], (25, 401))
+        temp_theta2 = np.reshape(theta[-(10 * 26):], (10, 26))
+        # 1. feedforward pass to compute inital activations in each layer, a = g(z) w/ g() as sigmoid
         inputs = np.concatenate((np.ones(1), X[i]))
         hidden_unsigmoided = np.concatenate((np.ones(1), np.matmul(temp_theta1, inputs.T)))     # z2
         hidden = sigmoid(hidden_unsigmoided)                                                    # a2
         outputs_unsigmoided = np.matmul(temp_theta2, hidden)                                    # z3
         outputs = sigmoid(outputs_unsigmoided)                                                  # a3
-        # 2
+        # 2. compute difference in initial predictions and actual values y (errors in output aka layer 3 nodes)
         d3 = outputs - y[i]
-        # 3
+        # 3. backpropagate: multiply errors in output by parameters in hidden (errors in hidden layer aka layer 2 nodes)
         d2 = np.matmul(temp_theta2.T, d3) * sigmoid_gradient(hidden_unsigmoided)
-        # 4
+        # 4. accumulate the gradient: error in next layer times activation in previous
         big_delta1 += np.matmul(d2[1:].reshape(25, 1), inputs.reshape(401, 1).T)
         big_delta2 += np.matmul(d3.reshape(10, 1), hidden.reshape(26, 1).T)
-    # 5
+    # 5. divide by number of training examples and return gradient in same shape as theta
     return (1 / m) * np.concatenate((big_delta1.ravel(), big_delta2.ravel()))
 
 
 def gradient_check(theta, index):
-    """
-    returns gradient given theta and index of element in full theta array
-    """
+    """ Returns gradient (computed numerically) given theta and index of element in full theta array """
     # need epsilon (small number) in vector form
     epsilon = 0.00000001
     new = np.zeros(10285)
@@ -164,34 +119,24 @@ def gradient_check(theta, index):
 
 
 def gradient_descent(theta, learning_rate=1, iterations=500):
-    """
-    returns optimized theta given starting theta (both in 1D, 'unraveled' array form)
-    """
+    """ Returns optimized theta given initial theta, both in consistent 1D-array form """
     # adjust theta in the direction of the negative gradient, repeat for specificed number of iterations
     for i in range(iterations):
         theta -= learning_rate * backpropagation(theta)
-        # make sure that cost decreases on each iteraion
         print(cost(theta))
     return theta
 
 
 def predict(index):
-    """
-    make a prediction given a point (index) in training data
-    """
+    """ Make a prediction on a single digit (index in training data) """
     # hypothesis: max value at index 9 for 0, 0 for 1, 1 for 2... adjusted accordingly
     h = np.argmax(hypothesis(final_theta)[index])
-    if h + 1 != 10:
-        print(h + 1)
-    else:
-        print(0)
+    print(h + 1) if (h + 1 != 10) else print(0)
     return None
 
 
 def find_accuracy(theta):
-    """
-    computes classification accuracy of given parameters theta on the entire training set
-    """
+    """ Prints classification accuracy of given parameters theta on the entire training set """
     number_correct = 0
     # count correct predictions
     for i in range(len(old_y)):
@@ -202,9 +147,7 @@ def find_accuracy(theta):
 
 
 def show_hidden(theta):
-    """
-    display weights from input -> hidden layer
-    """
+    """ Display weights from input -> hidden layer """
     plt.clf()
     plt.title('Hidden Layer Weights')
     plt.axis('off')
@@ -224,7 +167,7 @@ def show_hidden(theta):
 # TRAIN NETWORK TO MAKE PREDICTIONS
 ##########################################################################################################
 # start w/ theta as 25 * 401 + 10 * 26 element array w random values between -.12 and .12
-initial_theta = (np.random.rand(10285) * .24) - .12
+initial_theta = (np.random.rand(25 * 401 + 10 * 26) * .24) - .12
 
 # to check gradient: values should be close together
 full_grad = backpropagation(initial_theta)
@@ -237,6 +180,10 @@ print('\nBeginning training. Printing cost, should decrease every iteration:')
 final_theta = gradient_descent(initial_theta)
 print('\nNetwork is now trained!\n')
 
-# to make predictions: predict(index)
-# can check prediction visually: show_digit(index)
-# ^^ both with with index from 0 -> 4999
+# make a prediction and show an example of digit 3
+predict(1500)
+show_digit(1500)
+
+# show hidden activations
+show_hidden(final_theta)
+

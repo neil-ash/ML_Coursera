@@ -1,6 +1,4 @@
-"""
-regularized logistic regression
-"""
+""" Regularized logistic regression using gradient descent """
 
 ##########################################################################################################
 # IMPORT PACKAGES AND PREPARE DATA
@@ -8,7 +6,6 @@ regularized logistic regression
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
 from matplotlib import style
 style.use('ggplot')
 
@@ -27,27 +24,25 @@ plt.xlabel('Quality Test #1')
 plt.ylabel('Quality Test #2')
 
 # set up data nicely
-x1 = data[0]                                    # test 1
-x2 = data[1]                                    # test 2
-x_all = np.array([np.ones(x1.size), x1, x2])    # includes 1s, x1, x2
+X1 = data[0]                                    # test 1
+X2 = data[1]                                    # test 2
+X = np.array([np.ones(X1.size), X1, X2])        # includes 1s, x1, x2
 y = data[2]                                     # accepted (1) or rejected (0)
 m = data[0].size                                # number of training examples
+n = 28                                          # number of features (after running map_features)
 
 
 ##########################################################################################################
 # FUNCTIONS FOR SETUP AND TRAINING
 ##########################################################################################################
 def map_features(input1, input2):
-    """
-    creates list w/ 28 arrays corresponding to 1, x1, x2...x1x2^5, x2^6
-    """
+    """ Creates list w/ 28 arrays corresponding to 1, x1, x2...x1x2^5, x2^6 """
     degree = 6
     x_list = []
     for i in range(1, degree + 1):
         for j in range(i + 1):
             x_list.append((input1 ** (i - j)) * (input2 ** j))
-
-    # return mapped features as an np array, not list, if statement needed to include first entry of 1s
+    # return mapped features as an np array, include first entry of 1s
     if input1.size != 1:
         return np.concatenate((np.array([np.ones(input1.size)]), np.asarray(x_list)))
     else:
@@ -55,29 +50,23 @@ def map_features(input1, input2):
 
 
 def sigmoid(z):
-    """
-    returns output of sigmoid for input z, should work with np arrays (vectors and matrices) element-wise, same dimension as input
-    """
+    """ Returns sigmoid of input, works with np arrays (vectors and matrices) element-wise, same dimension as input """
     return 1 / (1 + np.exp(-z))
 
 
 def hypothesis(theta, input1, input2):
-    """
-    returns hypothesis for given parameters theta (28 element array), inputs (28 rows, any columns)
-    """
+    """ Returns hypothesis for given parameters theta (28 element array), inputs (28 rows, any columns) """
     return sigmoid(np.matmul(theta, map_features(input1, input2)))
 
 
 def cost(theta, L=1):
-    """
-    returns cost function for given parameters theta including regularization term, L is lambda: regularization constant
-    """
+    """ Returns cost function for given parameters theta including regularization term """
     # start with unregularized
-    unregularized_cost = (1 / m) * sum((-y) * np.log(hypothesis(theta, x1, x2)) -
-                                       (1 - y) * np.log(1 - hypothesis(theta, x1, x2)))
+    unregularized_cost = (1 / m) * sum((-y) * np.log(hypothesis(theta, X1, X2)) -
+                                       (1 - y) * np.log(1 - hypothesis(theta, X1, X2)))
     # include regularization term for all parameters EXCEPT theta[0]
     regularization_term = 0
-    for i in range(1, 28):
+    for i in range(1, n):
         regularization_term += theta[i] ** 2
     # scale by lambda
     regularization_term *= (L / (2 * m))
@@ -86,32 +75,26 @@ def cost(theta, L=1):
 
 
 def gradient(theta, L=1):
-    """
-    returns gradient (28 element array) of cost function for given parameters theta, L is lambda: regularization constant
-    """
+    """ Returns gradient (28 element array) of cost function for given parameters theta """
     # equation for gradient: use for all theta
-    theta_gradient = (1 / m) * np.matmul((hypothesis(theta, x1, x2) - y), map_features(x1, x2).T)
+    theta_gradient = (1 / m) * np.matmul((hypothesis(theta, X1, X2) - y), map_features(X1, X2).T)
     # inclusion of regularization term: for all theta EXCEPT theta0
-    for i in range(1, 28):
+    for i in range(1, n):
         theta_gradient[i] += (L / m) * theta[i]
-
     return theta_gradient
 
 
 def gradient_descent(theta, learning_rate=0.03, iterations=10000):
-    """
-    performs gradient descent, returns optimal values of theta
-    """
+    """ Performs gradient descent, returns optimal values of theta """
     for i in range(iterations):
         theta -= learning_rate * gradient(theta)
-
     return theta
 
 
 ##########################################################################################################
 # SHOW OPTIMIZED THETA AND ACCURACY
 ##########################################################################################################
-initial_theta = np.zeros(28)
+initial_theta = np.zeros(n)
 final_theta = gradient_descent(initial_theta)
 
 # plot decision boundary

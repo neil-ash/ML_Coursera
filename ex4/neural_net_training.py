@@ -95,7 +95,7 @@ def backpropagation(theta):
         outputs = sigmoid(outputs_unsigmoided)                                                  # a3
         # 2. compute difference in initial predictions and actual values y (errors in output aka layer 3 nodes)
         d3 = outputs - y[i]
-        # 3. backpropagate: multiply errors in output by parameters in hidden (errors in hidden layer aka layer 2 nodes)
+        # 3. backpropagate: multiply output errors by hidden parameters (errors in hidden layer aka layer 2 nodes)
         d2 = np.matmul(temp_theta2.T, d3) * sigmoid_gradient(hidden_unsigmoided)
         # 4. accumulate the gradient: error in next layer times activation in previous
         big_delta1 += np.matmul(d2[1:].reshape(25, 1), inputs.reshape(401, 1).T)
@@ -142,7 +142,7 @@ def find_accuracy(theta):
     for i in range(len(old_y)):
         if (np.argmax(hypothesis(theta)[i]) + 1) == old_y[i]:
             number_correct += 1
-    print('\nAccuracy on training set: %0.3f' % (number_correct / len(old_y)), sep='')
+    print('\nAccuracy on training set: %0.3f\n' % (number_correct / len(old_y)), sep='')
     return None
 
 
@@ -178,12 +178,16 @@ print(full_grad[401 * 25 + 69])
 # train model
 print('\nBeginning training. Printing cost, should decrease every iteration:')
 final_theta = gradient_descent(initial_theta)
-print('\nNetwork is now trained!\n')
+print('\nNetwork is now trained!')
 
-# make a prediction and show an example of digit 3
-predict(1500)
-show_digit(1500)
+# print accuracy of trained model
+find_accuracy(final_theta)
 
-# show hidden activations
-show_hidden(final_theta)
+# to make a prediction and see digit (ex: on a '3'):
+#       predict(1500)
+#       show_digit(1500)
+#
+# to show hidden layer activations:
+#       show_hidden(final_theta)
+
 

@@ -1,22 +1,28 @@
-"""
-regularized linear regression
-"""
+""" Regularized linear regression (done in preparation for learning curves exercise) """
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import style; style.use('ggplot')
+from matplotlib import style
+style.use('ggplot')
 
+
+##########################################################################################################
+# LOAD AND VISUALIZE DATA
+##########################################################################################################
 # needed to load data (as np arrays), puts data into numpy column vectors, shape == (length, 1)
 from scipy.io import loadmat
 data = loadmat('ex5data1.mat')
+
 # training
 X = data['X']
 y = data['y']
 m = X.shape[0]
 n = X.shape[1]
+
 # testing
 Xtest = data['Xtest']
 ytest = data['ytest']
+
 # validation
 Xval = data['Xval']
 yval = data['yval']
@@ -28,24 +34,21 @@ plt.ylabel('Water leaving dam')
 plt.scatter(X, y, color='skyblue')
 
 
+##########################################################################################################
+# FUNCTIONS FOR SETUP AND TRAINING
+##########################################################################################################
 def hypothesis(theta, inputs=X):
-    """
-    given 1D array parameters theta and 2D inputs array (default X) returns matrix multiplication (hypothesis)
-    """
+    """ Given 1D array parameters theta and 2D inputs array (default X) returns hypothesis """
     return np.matmul(theta, np.hstack((np.ones((len(inputs), 1)), inputs)).T)
 
 
 def cost(theta, LAMBDA=0):
-    """
-    returns cost for given parameters theta
-    """
+    """ Returns cost for given parameters theta """
     return (1 / (2 * m)) * sum((hypothesis(theta) - y.ravel()) ** 2) + (LAMBDA / (2 * m)) * sum(theta[1:] ** 2)
 
 
 def gradient(theta, LAMBDA=0):
-    """
-    returns gradient for given parameters theta
-    """
+    """ Returns gradient for given parameters theta """
     # X0: column of ones
     theta0_gradient = (1 / m) * sum((hypothesis(theta) - y.ravel()) * np.ones(len(y)))
     # X1: data given as X
@@ -54,15 +57,16 @@ def gradient(theta, LAMBDA=0):
 
 
 def gradient_descent(theta, learning_rate=0.001, iterations=20000):
-    """
-    performs gradient descent and returns optimized values of theta
-    """
+    """ Performs gradient descent and returns optimized values of theta """
     for i in range(iterations):
         theta = theta - learning_rate * gradient(theta)
-        # print(cost(theta))
+        #print(cost(theta))
     return theta
 
 
+##########################################################################################################
+# EXECUTE FUNCTIONS TO TRAIN MODEL
+##########################################################################################################
 # optimize theta using gradient descent
 initial_theta = np.array([1, 1])
 final_theta = gradient_descent(initial_theta)

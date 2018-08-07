@@ -1,9 +1,12 @@
-"""
-principal component analysis
+""" Principal Component Analysis on 2D dataset """
 
+"""
 Note) Could've done procedurally, no need for functions
 """
 
+##############################################################################################################
+# IMPORT PACKAGES, LOAD AND VISUALIZE DATA
+##############################################################################################################
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import style; style.use('ggplot')
@@ -25,6 +28,9 @@ def show_data(recovered=True):
     return None
 
 
+##############################################################################################################
+# PCA FUNCTIONS
+##############################################################################################################
 def normalize(inputs):
     """ Subtract mean and divide by std, call as X[0] = normalize(X[:, 0]); X[1] = normalize(X[:, 1])"""
     inputs = inputs.copy()
@@ -47,11 +53,14 @@ def projection(inputs, U_, k):
 
 
 def recover(inputs, U_, k):
-    """ Recover approximation of original data given projected data inputs, projection vector U_, and projected dimension k"""
+    """ Recover approximation of original data given projected data inputs, projection vector U_, and dimension k"""
     U_ = U_[:, :k]
     return np.matmul(U_, inputs.T).T
 
 
+##############################################################################################################
+# EXECUTE FUNCTIONS TO PERFORM PCA
+##############################################################################################################
 # normalize features
 X[:, 0] = normalize(X[:, 0])
 X[:, 1] = normalize(X[:, 1])

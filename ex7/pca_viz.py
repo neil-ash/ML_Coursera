@@ -1,6 +1,4 @@
-"""
-perform PCA to visualize pixel RGB values from image compression assignment
-"""
+""" Perform PCA to visualize pixel RGB values from image compression assignment """
 
 ##############################################################################################################
 # LOAD PACKAGES AND DATA
@@ -1039,7 +1037,8 @@ plt.title('Reduced Data')
 
 # plot reconstructed data
 ax2 = plt.figure(3).add_subplot(111, projection='3d')
-ax2.scatter(X_reconstructed[randos, 0], X_reconstructed[randos, 1], X_reconstructed[randos, 2], cmap='rainbow', c=indices[randos])
+ax2.scatter(X_reconstructed[randos, 0], X_reconstructed[randos, 1], X_reconstructed[randos, 2],
+            cmap='rainbow', c=indices[randos])
 ax2.set_title('Reconstructed Data')
 plt.show()
 

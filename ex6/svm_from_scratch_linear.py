@@ -1,6 +1,6 @@
-"""
-Building a linear SVM from scratch
+""" Building a linear SVM from scratch """
 
+"""
 Notes)
 - dont force matrix shapes to be hypothesis = theta.T, X
 - X: (51, 3), y: (51,), theta: (3,)
@@ -75,9 +75,9 @@ def cost1(z):
 
 
 def cost(theta, inputs, correct, C):
-    """ Returns cost given parameters theta (3,), inputs (?, 3) or (3,), ouputs matching inputs (?, 3) or (3,), and hyperparameter C """
-    return C * sum(correct[1:] * cost1(np.matmul(theta, inputs[1:].T)) + (1 - correct[1:]) * cost0(np.matmul(theta, inputs[1:].T))) \
-           + (1 / 2) * sum(theta[1:] ** 2)
+    """ Returns cost given parameters theta (3,), inputs (?, 3) or (3,), ouputs matches inputs (?, 3) or (3,) """
+    return C * sum(correct[1:] * cost1(np.matmul(theta, inputs[1:].T)) +
+                   (1 - correct[1:]) * cost0(np.matmul(theta, inputs[1:].T))) + (1 / 2) * sum(theta[1:] ** 2)
 
 
 def cost0_gradient(theta, inputs):
@@ -106,8 +106,8 @@ def cost1_gradient(theta, inputs):
 
 def gradient(theta, inputs, correct, C):
     """ Returns partial derivatives, specifically of cost0 and cost1, wrt theta """
-    return C * (np.matmul((1 - correct), cost0_gradient(theta, inputs)) + np.matmul(correct, cost1_gradient(theta, inputs))) \
-           + sum(abs(theta[1:]))
+    return C * (np.matmul((1 - correct), cost0_gradient(theta, inputs)) +
+                np.matmul(correct, cost1_gradient(theta, inputs))) + sum(abs(theta[1:]))
 
 
 def old_gradient(theta, inputs, correct, C):

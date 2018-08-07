@@ -1,5 +1,8 @@
 """ Anomaly detection for a higher dimension dataset """
 
+##############################################################################################################
+# IMPORT PACKAGES AND LOAD DATA
+##############################################################################################################
 import numpy as np
 from scipy.io import loadmat
 
@@ -12,6 +15,9 @@ m = X.shape[0]
 n = X.shape[1]
 
 
+##############################################################################################################
+# FUNCTIONS FOR ANOMALY DETECTION
+##############################################################################################################
 def means_and_variances(inputs):
     """ Return n-dimensionals vectors holding means and variances of inputs """
     means = []
@@ -81,6 +87,9 @@ def find_amonalies(means, variances, epsilon):
     return X[np.where(hypothesis == 1)]
 
 
+##############################################################################################################
+# EXECUTE FUNCTIONS TO FIND ANOMALIES
+##############################################################################################################
 # set parameters
 mean_, variance_ = means_and_variances(X)
 threshold = select_threshold(mean_, variance_)

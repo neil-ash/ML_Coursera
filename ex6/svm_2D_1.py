@@ -1,12 +1,12 @@
-"""
-svm for 2D dataset -- Example 1
-"""
+""" SVM for 2D, linearly separable dataset using sklearn """
 
-import numpy as np
 from sklearn import svm
 import matplotlib.pyplot as plt
 from matplotlib import style; style.use('ggplot')
 
+##########################################################################################################
+# LOAD AND VISUALIZE DATA
+##########################################################################################################
 # needed to load data (as np arrays), puts data into numpy column vectors, shape == (length, 1)
 from scipy.io import loadmat
 data = loadmat('ex6data1.mat')
@@ -27,8 +27,12 @@ plt.title('Example Dataset 1')
 plt.xlabel('X1')
 plt.ylabel('X2')
 
+
+##########################################################################################################
+# TRAIN SVM AND PLOT DECISION BOUNDARY
+##########################################################################################################
 # train an SVM using a linear kernel
-clf = svm.SVC(kernel='linear', C=1.0)
+clf = svm.SVC(kernel='linear', C=1)
 clf.fit(X, y.ravel())
 
 # decision boundary eq in form: intercept + x1 * coeffficient[0] + x2 * coefficient[1] = 0
@@ -42,5 +46,3 @@ ptX2 = (-theta0 - theta1 * ptX1[0]) / theta2, (-theta0 - theta1 * ptX1[1]) / the
 plt.plot(ptX1, ptX2, color='black')
 plt.show()
 
-
-""" LATER: ACTUALLY MAKE SVM FROM SCRATCH """

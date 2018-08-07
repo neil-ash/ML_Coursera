@@ -1,12 +1,14 @@
-"""
-svm for email spam classification
-"""
+""" SVM for email spam classification """
 
 import numpy as np
 from sklearn import svm
 import re
 from nltk.stem import PorterStemmer
 
+
+##########################################################################################################
+# LOAD DATA
+##########################################################################################################
 # needed to load data (as np arrays), puts data into numpy column vectors, shape == (length, 1)
 from scipy.io import loadmat
 spam_train = loadmat('spamTrain.mat')
@@ -18,6 +20,10 @@ y = spam_train['y']
 Xtest = spam_test['Xtest']
 ytest = spam_test['ytest']
 
+
+##########################################################################################################
+# TRAIN SVM
+##########################################################################################################
 # train a linear svm
 clf = svm.SVC(kernel='linear', probability=True, C=0.1)
 clf.fit(X, y.ravel())
@@ -25,6 +31,10 @@ clf.fit(X, y.ravel())
 # test svm on test set
 print('\nAccuracy on test set: %0.3f' % clf.score(Xtest, ytest), sep='')
 
+
+##########################################################################################################
+# SET UP FOR PREDICTING NEW EMAIL CLASSIFICATION
+##########################################################################################################
 # save learned parameters as theta, find index of largest postive weights, add 1 to get word indices
 theta = clf.coef_[0].tolist()
 top_idx = sorted(range(len(theta)), key=lambda i: theta[i])[-15:]
@@ -45,10 +55,13 @@ for i in range(len(top_idx)):
     print('\t', i + 1, '. ', vocab_dict[str(top_idx[i])], sep='')
 
 
-""" SUPER IMPORTANT: switches keys and values in vocab_dict """
+# SUPER IMPORTANT: switches keys and values in vocab_dict
 vocab_dict = {v: k for k, v in vocab_dict.items()}
 
 
+##########################################################################################################
+# FUNCTIONS TO PREPROCESS AND MAKE PREDICTIONS ON NEW EMAILS
+##########################################################################################################
 def preprocess(filename):
     """
     returns sparse vector when given filename as string

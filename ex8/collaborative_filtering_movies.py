@@ -1,5 +1,12 @@
-""" Collaborative filtering for movie reccomendations """
+""" Collaborative Filtering for movie reccomendations """
 
+"""
+Note) cost and gradient functions do not include R_ in regularization
+"""
+
+##############################################################################################################
+# IMPORT PACKAGES, LOAD AND VISUALIZE DATA
+##############################################################################################################
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
@@ -7,10 +14,10 @@ from scipy.io import loadmat
 # load data
 data_ratings = loadmat('ex8_movies.mat')
 data_parameters = loadmat('ex8_movieParams.mat')
-Y = data_ratings['Y']                                       # rating of movie i by user j (index (i, j)), (num_movies, num_users)
-R = data_ratings['R']                                       # if a movie i has been rated by user j (index (i, j)), shape of Y
-X = data_parameters['X']                                    # features (10) for each movie (num_movies, num_features)
-Theta = data_parameters['Theta']                            # parameters for each user (num_users, num_features)
+Y = data_ratings['Y']                            # rating of movie i by user j (index (i, j)), (num_movies, num_users)
+R = data_ratings['R']                            # if a movie i has been rated by user j (index (i, j)), shape of Y
+X = data_parameters['X']                         # features (10) for each movie (num_movies, num_features)
+Theta = data_parameters['Theta']                 # parameters for each user (num_users, num_features)
 num_users = data_parameters['num_users'][0, 0]
 num_movies = data_parameters['num_movies'][0, 0]
 num_features = data_parameters['num_features'][0, 0]
@@ -37,9 +44,9 @@ def visualize_ratings():
     plt.show()
 
 
-""" COST AND GRADIENT FUNCTIONS DO NOT INCLUDE R_ IN REGULARIZATION """
-
-
+##############################################################################################################
+# FUNCTIONS FOR COLLABORATIVE FILTERING
+##############################################################################################################
 def cost(x=X_, theta=Theta_, y=Y_, r=R_, LAMBDA=1.5):
     """ Returns unregularized total cost for a subset of the dataset """
     unregularized_cost = (1/2) * np.sum((r * (np.matmul(x, theta.T) - y)) ** 2)
@@ -77,13 +84,16 @@ def gradient_descent(x, theta, y, r, LAMBDA=0, learning_rate=0.000001, iteration
 
 
 def normalize(y):
-    """ Perform mean normalization on ratings y, return mean-normalized y and mean of every movie in array"""
+    """ Perform mean normalization on ratings y, return mean-normalized y and mean of every movie in array """
     # for every movie, find mean rating
     y_mean = (np.sum(y, axis=1) / np.count_nonzero(y, axis=1)).reshape((-1, 1))
     y_norm = y - y_mean
     return y_norm, y_mean
 
 
+##############################################################################################################
+# MAKE PREDICTIONS
+##############################################################################################################
 # normalize Y and randomly initialize X and Theta
 Y_normalized, Y_means = normalize(Y)
 X = np.random.rand(num_movies, num_features) * 2 - 1

@@ -1,7 +1,8 @@
-"""
-k-means clustering on 2D datasets
-"""
+""" K-means Clustering on 2D dataset"""
 
+##############################################################################################################
+# IMPORT PACKAGES, LOAD AND VISUALIZE DATA
+##############################################################################################################
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import style; style.use('ggplot')
@@ -24,6 +25,9 @@ def show_data():
     return None
 
 
+##############################################################################################################
+# FUNCTIONS FOR CLUSTERING
+##############################################################################################################
 def random_initialization(k):
     """ Returns k randomly choosen points in X as initial centroids """
     centroid_ls = []
@@ -63,6 +67,9 @@ def learn(k, iterations=100):
     return u, c
 
 
+##############################################################################################################
+# FUNCTIONS FOR VISUALIZATION
+##############################################################################################################
 def show_clusters(u, c, k):
     """ Show learned clusters, up to 10 """
     plt.clf()
@@ -84,7 +91,7 @@ def test_k(K):
     return None
 
 
-# run program
+# run program, try different k values
 test_k(3)
 
 

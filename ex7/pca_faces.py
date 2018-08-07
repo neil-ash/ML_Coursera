@@ -1,6 +1,4 @@
-"""
-principal component analysis on faces dataset
-"""
+""" Principal Component Analysis on faces dataset """
 
 ##############################################################################################################
 # IMPORT PACKAGES AND LOAD DATA

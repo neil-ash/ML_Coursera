@@ -1,3 +1,8 @@
+""" K-means Clustering for image compression """
+
+##############################################################################################################
+# IMPORT PACKAGES AND LOAD DATA
+##############################################################################################################
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,6 +17,9 @@ A = original_A.reshape(-1, 3)
 m = A.shape[0]
 
 
+##############################################################################################################
+# FUNCTIONS FOR CLUSTERING
+##############################################################################################################
 def random_initialization(k):
     """ Returns k randomly choosen points in X as initial centroids """
     centroid_ls = []
@@ -26,7 +34,7 @@ def cluster_assigment(centroids):
     for i in range(m):
         min_error = np.inf
         for j in range(len(centroids)):
-            instance_error = np.linalg.norm(A[i] - centroids[j]) ** 2
+            instance_error = np.linalg.norm((A[i] - centroids[j]).astype(np.float64)) ** 2
             if instance_error < min_error:
                 min_error = instance_error
                 assignments[i] = j
@@ -51,6 +59,9 @@ def learn(k, iterations=25):
     return u, c
 
 
+##############################################################################################################
+# EXECUTE FUNCTIONS TO PERFORM CLUSTERING
+##############################################################################################################
 # get mapping of points in A onto 16 clusters C, described by U
 vectors, indices = learn(16)
 

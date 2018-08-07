@@ -1,6 +1,4 @@
-"""
-svm for 2D dataset -- Example 2
-"""
+""" SVM for non-linearly separable dataset, using sklearn and kernel from scratch, select best hyperparameters """
 
 import numpy as np
 from sklearn import svm
@@ -31,18 +29,16 @@ plt.xlabel('X1')
 plt.ylabel('X2')
 
 
+##########################################################################################################
+# KERNEL FUNCTIONS
+##########################################################################################################
 def gaussian_kernel(training_ex, landmark, sigma=0.1):
-    """
-    enter 2, 1D np arrays
-    data provided: x1 = [1 2 1]; x2 = [0 4 -1]; sigma = 2; should get 0.324652
-    """
+    """ Enter 2 1D np arrays, returns gaussian similarity """
     return np.exp(-(np.linalg.norm(training_ex - landmark) ** 2 / (2 * (sigma ** 2))))
 
 
 def all_features(inputs, comparison, sigma=0.1):
-    """
-    returns matrix of similarity comparisons for ALL points in X
-    """
+    """ Returns matrix of similarity comparisons for ALL points in X """
     # to fill in f, array of features w shape (863, 863)
     f = np.zeros((inputs.shape[0], comparison.shape[0]))
     # iterate over every example twice to make every possible comparison
@@ -52,6 +48,9 @@ def all_features(inputs, comparison, sigma=0.1):
     return f
 
 
+##########################################################################################################
+# HYPERPARAMETER SELECTION
+##########################################################################################################
 # find best values of sigma and C iterating thru all combinations of possible values
 hyperparameter_ls = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]
 most_correct = 0
@@ -83,15 +82,16 @@ print('Best sigma:', best_sigma)
 print('Best C:', best_C)
 
 
+##########################################################################################################
+# TRAIN SVM AND PLOT DECISION BOUNDARY
+##########################################################################################################
 # to show boundary: train SVM with best hyperparameters
 clf = svm.SVC(kernel='linear', C=best_C)
 clf.fit(all_features(X, X, sigma=best_sigma), y.ravel())
 
 
 def fill_features(input_point, sigma=0.1):
-    """
-    returns vector of similarity comparisons with X for a given value input_point, needed to plot predictions
-    """
+    """ Returns vector of similarity comparisons with X for given input_point, needed to plot predictions """
     # to fill in f, array of features w shape (863, 1)
     f = np.zeros(X.shape[0])
     # iterate over every example to compare

@@ -1,12 +1,14 @@
-"""
-svm for 2D dataset -- Example 2
-"""
+""" SVM for non-linearly separable dataset, using sklearn and kernel from scratch """
 
 import numpy as np
 from sklearn import svm
 import matplotlib.pyplot as plt
 from matplotlib import style; style.use('ggplot')
 
+
+##########################################################################################################
+# LOAD AND VISUALIZE DATA
+##########################################################################################################
 # needed to load data (as np arrays), puts data into numpy column vectors, shape == (length, 1)
 from scipy.io import loadmat
 data = loadmat('ex6data2.mat')
@@ -29,18 +31,16 @@ plt.xlabel('X1')
 plt.ylabel('X2')
 
 
+##########################################################################################################
+# KERNEL FUNCTIONS
+##########################################################################################################
 def gaussian_kernel(training_ex, landmark, sigma=0.1):
-    """
-    enter 2, 1D np arrays
-    data provided: x1 = [1 2 1]; x2 = [0 4 -1]; sigma = 2; should get 0.324652
-    """
+    """ Enter 2 1D np arrays, returns gaussian similarity """
     return np.exp(-(np.linalg.norm(training_ex - landmark) ** 2 / (2 * (sigma ** 2))))
 
 
 def all_features(sigma=0.1):
-    """
-    returns matrix of similarity comparisons for ALL points in X
-    """
+    """ Returns matrix of similarity comparisons for ALL points in X """
     # to fill in f, array of features w shape (863, 863)
     f = np.zeros((X.shape[0], X.shape[0]))
     # iterate over every example twice to make every possible comparison
@@ -51,9 +51,7 @@ def all_features(sigma=0.1):
 
 
 def fill_features(input_point, sigma=0.1):
-    """
-    returns vector of similarity comparisons with X for a given value input_point
-    """
+    """ Returns vector of similarity comparisons with X for a given value input_point """
     # to fill in f, array of features w shape (863, 1)
     f = np.zeros(X.shape[0])
     # iterate over every example to compare
@@ -62,6 +60,9 @@ def fill_features(input_point, sigma=0.1):
     return f
 
 
+##########################################################################################################
+# TRAIN SVM AND VISUALIZE DECISION BOUNDARY
+##########################################################################################################
 # get all features
 gaussian_features = all_features()
 

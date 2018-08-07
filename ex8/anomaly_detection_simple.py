@@ -1,5 +1,8 @@
-""" Let's detect some anomalies!! """
+""" Anomaly Detection on 2D dataset """
 
+##############################################################################################################
+# IMPORT PACKAGES, LOAD AND VISUALIZE DATA
+##############################################################################################################
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
@@ -27,6 +30,9 @@ def show_data():
     return None
 
 
+##############################################################################################################
+# FUNCTIONS FOR ANOMALY DETECTION
+##############################################################################################################
 def estimate_gaussian(inputs):
     """ Return n-dimensionals vectors holding means and variances of inputs """
     means = []
@@ -64,8 +70,9 @@ def select_threshold(means, variances):
             # iterate over features
             for j in range(Xval.shape[1]):
                 # compute probability p
-                p *= (1 / ((np.sqrt(2 * np.pi)) * np.sqrt(variances[j]))) * np.exp(-((Xval[i, j] - means[j]) ** 2) / (2 * variances[j]))
-            # done with iterations for a single example: if p < epsilon, then hypothesis is 1, otherwise hypothesis is 0
+                p *= (1 / ((np.sqrt(2 * np.pi)) * np.sqrt(variances[j]))) * \
+                     np.exp(-((Xval[i, j] - means[j]) ** 2) / (2 * variances[j]))
+            # done with iterations for a single example: if p < epsilon, then hypothesis = 1, otherwise hypothesis = 0
             hypothesis = (1 if p < epsilon else 0)
             # add to counters of tp, fn, fp
             if yval[i] == 1 and hypothesis == 1:   tp += 1
@@ -97,7 +104,8 @@ def find_amonalies(means, variances, epsilon):
         # iterate over features
         for j in range(X.shape[1]):
             # compute probability p
-            p *= (1 / ((np.sqrt(2 * np.pi)) * np.sqrt(variances[j]))) * np.exp(-((X[i, j] - means[j]) ** 2) / (2 * variances[j]))
+            p *= (1 / ((np.sqrt(2 * np.pi)) * np.sqrt(variances[j]))) * \
+                 np.exp(-((X[i, j] - means[j]) ** 2) / (2 * variances[j]))
         # after iterating thru features, can check if p below threshold
         if p < epsilon:
             ax.scatter(X[i, 0], X[i, 1], marker='x', color='red')
@@ -105,6 +113,9 @@ def find_amonalies(means, variances, epsilon):
     return np.asarray(anomalies)
 
 
+##############################################################################################################
+# EXECUTE FUNCTIONS TO FIND ANOMALIES
+##############################################################################################################
 # set parameters
 mean, variance = estimate_gaussian(X)
 threshold = select_threshold(mean, variance)

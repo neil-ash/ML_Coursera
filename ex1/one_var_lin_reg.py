@@ -72,7 +72,7 @@ ax2.set_ylabel('Cost')
 
 # plot trend line
 x_show = [min(X[1]), max(X[1])]
-y_show = [max(hypothesis()), min(hypothesis())]
+y_show = [min(hypothesis()), max(hypothesis())]
 ax1.plot(x_show, y_show, color='skyblue')
 
 # show all graphs

@@ -1,4 +1,4 @@
-""" Implementation of a neural network trained with backpropagation for the MNIST dataset """
+""" Implementation of a neural network trained with backpropagation for the MNIST dataset (20x20 pixel images) """
 
 ##########################################################################################################
 # IMPORT PACKAGES AND PREPARE DATA
@@ -11,7 +11,6 @@ style.use('ggplot')
 # needed to load data (as np arrays)
 from scipy.io import loadmat
 data = loadmat('ex4data1.mat')
-weights = loadmat('ex4weights.mat')
 
 # X and y
 X = data['X']
